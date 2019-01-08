@@ -1,0 +1,116 @@
+<html lang ="en">
+<head>
+    <meta charset="utf-8">
+    <title>Gif Buttons</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <style type="text/css">
+    button,
+    div,
+    form,
+    input {
+        margin: 10px;
+        font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    }
+    .gifholder {
+        float: left
+    }
+    
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="button-holder"></div>
+        <form id="button-form">
+            <br>
+            <input type="text" id="button-input">
+            <input id="new-button" type="submit">
+            <br>
+        </form>
+        <div id="giph-results"></div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript">
+      var giphs=["Cat","Dog","Gorilla"];
+      function displayGifInfo() {
+          var giph = $(this).attr("data-name");
+          var queryURL = "https://api.giphy.com/v1/gifs/search?q="+giph+"&api_key=QPzKbQ7KIs276DRQvNhErrB08GjXbMWf&limit=10"
+        $.ajax({
+            url:queryURL,
+            method:"GET"
+        }).then(function(response){
+            console.log(queryURL);
+            console.log(response);
+            var results = response.data;
+            for (var i=0; i,results.length; i++){
+            var giphDiv = $("<div class='gifholder'>");
+            var rated = $("<p class='ratingholder'>").text(results[i].rating);
+            var giphImage = $("<img class='gif' src='"+response.data[i].images.fixed_height_still.url+"'>");
+            // giphImage.attr("src",results[i].images.fixed_height_still.url);
+            // giphImage.attr("data-still",results[i].images.fixed_height_still.url);
+            // giphImage.attr("data-animate",results[i].images.fixed_height.url);
+            // giphImage.attr("data-state","still")
+            giphDiv.append(rated);
+            giphDiv.append(giphImage);
+            $("#giph-results").prepend(giphDiv);
+
+
+            }
+        });
+      }
+      function renderButtons(){
+          $("#button-holder").empty();
+          for (var i=0; i<giphs.length; i++){
+              var newButtons = $("<button type='button' class='btn btn-success'>");
+              newButtons.addClass("giph-btn");
+              newButtons.attr("data-name",giphs[i]);
+              newButtons.text(giphs[i]);
+              $("#button-holder").append(newButtons);
+          }
+      }
+      $("#new-button").on("click",function(event){
+          event.preventDefault();
+          var giph =$("#button-input").val().trim();
+          giphs.push(giph);
+          renderButtons();
+      });
+      $(document).on("click",".giph-btn",displayGifInfo);
+      renderButtons();
+      console.log(giphs)
+
+      $("body").on("click", ".gif", function() {
+   var src = $(this).attr("src");
+ if($(this).hasClass("playing")){
+    //stop
+    $(this).attr("src", src.replace(/\.gif/i, "_s.gif"))
+    $(this).removeClass("playing");
+ } else {
+   //play
+   $(this).addClass("playing");
+   $(this).attr("src", src.replace(/\_s.gif/i, ".gif"))
+ }
+})
+
+
+    //   $(".gif").on("click", function() {
+
+    //   var state = $(this).attr("data-state");
+
+    //   if (state === "still") {
+    //     $(this).attr("src", $(this).attr("data-animate"));
+    //     $(this).attr("data-state", "animate");
+    //   } else {
+    //     $(this).attr("src", $(this).attr("data-still"));
+    //     $(this).attr("data-state", "still");
+    //   }
+ 
+
+
+
+
+
+
+
+
+    </script>
+</body>
+</html>
